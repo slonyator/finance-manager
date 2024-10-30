@@ -42,18 +42,33 @@ if __name__ == "__main__":
 
     content = ContentExtractor().convert_pdf_to_images(pdf_files[0])
 
+    system_message = {
+        "role": "system",
+        "content": (
+            "You are a document analysis assistant specialized in extracting "
+            "structured information from scanned pages of documents. Focus on "
+            "identifying text, headings, tables, and visual elements. When "
+            "extracting content, preserve any structured elements such as "
+            "bullet points, lists, and tables, and provide content in a clean, "
+            "readable format for ease of understanding."
+        ),
+    }
+
     message = {
         "role": "user",
         "content": (
             "Analyze this document page and extract the main content. "
             "Focus on text, headings, tables, and important visual elements. "
-            "Provide a detailed summary that captures the layout and key information "
-            "while preserving any structured elements like lists or bullet points."
+            "Provide a detailed summary that captures the and key information "
+            "while preserving any structured elements like lists or "
+            "bullet points."
         ),
         "images": [content[0]],
     }
 
-    response = ollama.chat(model="llava:13b", messages=[message])
+    response = ollama.chat(
+        model="llava:13b", messages=[system_message, message]
+    )
 
     logger.info("Response received")
 
