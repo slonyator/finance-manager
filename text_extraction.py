@@ -44,7 +44,12 @@ if __name__ == "__main__":
 
     message = {
         "role": "user",
-        "content": "Describe this image:",
+        "content": (
+            "Analyze this document page and extract the main content. "
+            "Focus on text, headings, tables, and important visual elements. "
+            "Provide a detailed summary that captures the layout and key information "
+            "while preserving any structured elements like lists or bullet points."
+        ),
         "images": [content[0]],
     }
 
@@ -52,4 +57,6 @@ if __name__ == "__main__":
 
     logger.info("Response received")
 
-    logger.info(response["message"]["content"])
+    content = response["message"]["content"]
+
+    logger.info(f"Content: {content}")
