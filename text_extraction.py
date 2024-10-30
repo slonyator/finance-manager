@@ -1,8 +1,13 @@
+"""
+This module provides functionality to extract content from PDF files.
+It includes methods to convert PDF pages to images and analyze the content of
+these images.
+"""
+
 import glob
 import os
 from io import BytesIO
-from typing import Dict, Any
-from typing import List
+from typing import Dict, Any, List
 
 import ollama
 from loguru import logger
@@ -11,6 +16,9 @@ from pyprojroot import here
 
 
 class ContentExtractor:
+    """
+    A class used to extract content from PDF files.
+    """
 
     @staticmethod
     def convert_pdf_to_images(pdf_path: str) -> List[bytes]:
@@ -86,9 +94,9 @@ class ContentExtractor:
 
 
 if __name__ == "__main__":
-    pdf_path = str(here("./data/"))
+    PDF_PATH = str(here("./data/"))
 
-    pdf_files = glob.glob(os.path.join(pdf_path, "*.pdf"))
+    pdf_files = glob.glob(os.path.join(PDF_PATH, "*.pdf"))
 
     bytes_content = ContentExtractor.convert_pdf_to_images(pdf_files[0])
 
