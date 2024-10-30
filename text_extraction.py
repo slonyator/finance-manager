@@ -12,7 +12,8 @@ from pyprojroot import here
 
 class ContentExtractor:
 
-    def convert_pdf_to_images(self, pdf_path: str) -> List[bytes]:
+    @staticmethod
+    def convert_pdf_to_images(pdf_path: str) -> List[bytes]:
         """
         Converts a PDF file to a list of images in byte format.
 
@@ -35,7 +36,8 @@ class ContentExtractor:
 
         return images_bytes
 
-    def page_content_to_str(self, page: bytes) -> str:
+    @staticmethod
+    def page_content_to_str(page: bytes) -> str:
         """
         Analyzes a document page and extracts the main content.
 
@@ -88,8 +90,8 @@ if __name__ == "__main__":
 
     pdf_files = glob.glob(os.path.join(pdf_path, "*.pdf"))
 
-    bytes_content = ContentExtractor().convert_pdf_to_images(pdf_files[0])
+    bytes_content = ContentExtractor.convert_pdf_to_images(pdf_files[0])
 
-    content = ContentExtractor().page_content_to_str(bytes_content[0])
+    content = ContentExtractor.page_content_to_str(bytes_content[0])
 
     logger.info(f"Content: {content}")
