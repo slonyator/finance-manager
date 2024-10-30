@@ -1,7 +1,7 @@
 """
-This module provides functionality to extract content from PDF files.
-It includes methods to convert PDF pages to images and analyze the content of
-these images.
+This module provides functionality to extract text content from PDF files.
+It includes methods to convert PDF pages to image bytes and analyze the content
+of these images using a vision model.
 """
 
 import glob
@@ -15,25 +15,26 @@ from pdf2image import convert_from_path
 from pyprojroot import here
 
 
-class ContentExtractor:
+class PDFContentExtractor:
     """
-    A class used to extract content from PDF files.
+    A class used to retrieve and extract text content from PDF files.
     """
 
     @staticmethod
-    def convert_pdf_to_images(pdf_path: str) -> List[bytes]:
+    def pdf_to_image_bytes(pdf_path: str) -> List[bytes]:
         """
-        Converts a PDF file to a list of images in byte format.
+        Converts each page of a PDF file to an image in byte format.
 
         Args:
             pdf_path (str): The file path to the PDF document.
 
         Returns:
-            List[bytes]: A list of images in byte format.
+            List[bytes]: A list of images in byte format, each representing a
+            PDF page.
         """
         pages = convert_from_path(pdf_path)
 
-        images_bytes = [
+        page_images = [
             (
                 img_byte_arr := BytesIO(),
                 page.save(img_byte_arr, format="PNG"),
@@ -42,18 +43,20 @@ class ContentExtractor:
             for page in pages
         ]
 
-        return images_bytes
+        return page_images
 
     @staticmethod
-    def page_content_to_str(page: bytes) -> str:
+    def get_text_from_image_bytes(page_bytes: bytes) -> str:
         """
-        Analyzes a document page and extracts the main content.
+        Analyzes a single page image in byte format and extracts its main text
+        content.
 
         Args:
-            page (bytes): The content of the document page in byte format.
+            page_bytes (bytes): The content of a document page in image byte
+            format.
 
         Returns:
-            str: The extracted content from the document page.
+            str: The extracted text content from the document page.
         """
         system_message: Dict[str, Any] = {
             "role": "system",
@@ -77,7 +80,7 @@ class ContentExtractor:
                 "key information while preserving any structured elements like "
                 "lists or bullet points."
             ),
-            "images": [page],
+            "images": [page_bytes],
         }
 
         response = ollama.chat(
@@ -88,18 +91,18 @@ class ContentExtractor:
 
         logger.info("Response received")
 
-        extracted_content: str = response["message"]["content"]
+        extracted_text: str = response["message"]["content"]
 
-        return extracted_content
+        return extracted_text
 
 
 if __name__ == "__main__":
-    PDF_PATH = str(here("./data/"))
+    DATA_DIRECTORY = str(here("./data/"))
 
-    pdf_files = glob.glob(os.path.join(PDF_PATH, "*.pdf"))
+    pdf_files = glob.glob(os.path.join(DATA_DIRECTORY, "*.pdf"))
 
-    bytes_content = ContentExtractor.convert_pdf_to_images(pdf_files[0])
+    image_bytes = PDFContentExtractor.pdf_to_image_bytes(pdf_files[0])
 
-    content = ContentExtractor.page_content_to_str(bytes_content[0])
+    content = PDFContentExtractor.get_text_from_image_bytes(image_bytes[0])
 
-    logger.info(f"Content: {content}")
+    logger.info(f"Extracted Content: {content}")
