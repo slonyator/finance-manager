@@ -73,14 +73,14 @@ class ContentExtractor:
         }
 
         response = ollama.chat(
-            model="llava:13b", messages=[system_message, message]
+            model="llava:13b",
+            messages=[system_message, message],
+            options={"temperature": 0},
         )
 
         logger.info("Response received")
 
         extracted_content: str = response["message"]["content"]
-
-        logger.info(f"Content: {extracted_content}")
 
         return extracted_content
 
