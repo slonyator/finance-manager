@@ -43,7 +43,9 @@ class PDFContentExtractor:
         return page_images
 
     @staticmethod
-    def get_text_from_image_bytes(page_bytes: bytes) -> str:
+    def get_text_from_image_bytes(
+        page_bytes: bytes, model: str = "llava:13b", temperature: float = 0.0
+    ) -> str:
         """
         Analyzes a single page image in byte format and extracts its main text
         content.
@@ -51,6 +53,8 @@ class PDFContentExtractor:
         Args:
             page_bytes (bytes): The content of a document page in image byte
             format.
+            model (str): The model to be used for text extraction. Default is "llava:13b".
+            temperature (float): The temperature setting for the model. Default is 0.0.
 
         Returns:
             str: The extracted text content from the document page.
@@ -81,9 +85,9 @@ class PDFContentExtractor:
         }
 
         response = ollama.chat(
-            model="x/llama3.2-vision:latest",
+            model=model,
             messages=[system_message, message],
-            options={"temperature": 0},
+            options={"temperature": temperature},
         )
 
         logger.info("Response received")
