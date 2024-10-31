@@ -60,7 +60,10 @@ class PDFContentExtractor:
             "content": (
                 "You are a document analysis assistant specialized in "
                 "extracting structured information from scanned pages of "
-                "documents. Focus on identifying text, headings, tables, and "
+                "documents. You will be dealing with bank account statements, "
+                "and it's necessary to extract the entire content from the "
+                "PDF, which includes every single transaction with all the "
+                "details.Focus on identifying text, headings, tables, and "
                 "visual elements. When extracting content, preserve any "
                 "structured elements such as bullet points, lists, and tables, "
                 "and provide content in a clean, readable format for ease of "
@@ -71,17 +74,14 @@ class PDFContentExtractor:
         message: Dict[str, Any] = {
             "role": "user",
             "content": (
-                "Analyze this document page and extract the main content. "
-                "Focus on text, headings, tables, and important visual "
-                "elements. Provide a detailed summary that captures the and "
-                "key information while preserving any structured elements like "
-                "lists or bullet points."
+                "Analyze this document page and extract the every single "
+                "transaction. List all of them in bullet points."
             ),
             "images": [page_bytes],
         }
 
         response = ollama.chat(
-            model="llava:13b",
+            model="x/llama3.2-vision:latest",
             messages=[system_message, message],
             options={"temperature": 0},
         )
