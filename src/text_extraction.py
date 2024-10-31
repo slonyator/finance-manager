@@ -4,15 +4,12 @@ It includes methods to convert PDF pages to image bytes and analyze the content
 of these images using a vision model.
 """
 
-import glob
-import os
 from io import BytesIO
 from typing import Dict, Any, List
 
 import ollama
 from loguru import logger
 from pdf2image import convert_from_path
-from pyprojroot import here
 
 
 class PDFContentExtractor:
@@ -94,15 +91,3 @@ class PDFContentExtractor:
         extracted_text: str = response["message"]["content"]
 
         return extracted_text
-
-
-if __name__ == "__main__":
-    DATA_DIRECTORY = str(here("./data/"))
-
-    pdf_files = glob.glob(os.path.join(DATA_DIRECTORY, "*.pdf"))
-
-    image_bytes = PDFContentExtractor.pdf_to_image_bytes(pdf_files[0])
-
-    content = PDFContentExtractor.get_text_from_image_bytes(image_bytes[0])
-
-    logger.info(f"Extracted Content: {content}")
