@@ -145,7 +145,7 @@ class TestGetTextFromImageBytes:
         )
 
         mock_ollama_chat.assert_called_once()
-        args, kwargs = mock_ollama_chat.call_args
+        _, kwargs = mock_ollama_chat.call_args
         assert kwargs["model"] == "llava:13b"
         assert kwargs["options"] == {"temperature": 0}
         assert "messages" in kwargs
@@ -168,7 +168,7 @@ class TestGetTextFromImageBytes:
 
         assert result == ""
         mock_ollama_chat.assert_called_once()
-        args, kwargs = mock_ollama_chat.call_args
+        _, kwargs = mock_ollama_chat.call_args
         assert kwargs["model"] == "llava:13b"
         assert kwargs["options"] == {"temperature": 0}
         assert "messages" in kwargs
